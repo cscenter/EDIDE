@@ -33,13 +33,11 @@ public class StudyNewProjectPanel{
   private JPanel myErrorPanel;
   private JLabel myAuthorLabel;
   private JLabel myDescriptionLabel;
-  private final Project myProject;
   private final StudyDirectoryProjectGenerator myGenerator;
   private static final String CONNECTION_ERROR = "<html>Failed to download courses.<br>Check your Internet connection.</html>";
   private static final String INVALID_COURSE = "Selected course is invalid";
 
   public StudyNewProjectPanel(final Project project, StudyDirectoryProjectGenerator generator, StudyNewProjectDialog dialog) {
-    myProject = project;
     myGenerator = generator;
     myDialog = dialog;
     Map<CourseInfo, File> courses = myGenerator.getCourses();
@@ -77,7 +75,7 @@ public class StudyNewProjectPanel{
     myBrowseButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        FileChooser.chooseFile(fileChooser, myProject, myProject.getBaseDir(),
+        FileChooser.chooseFile(fileChooser, null, null,
                                new Consumer<VirtualFile>() {
                                  @Override
                                  public void consume(VirtualFile file) {
@@ -167,7 +165,7 @@ public class StudyNewProjectPanel{
       myAvailableCourses = newCourses.keySet();
       myGenerator.flushCache();
     }
-  };
+  }
 
 
   /**

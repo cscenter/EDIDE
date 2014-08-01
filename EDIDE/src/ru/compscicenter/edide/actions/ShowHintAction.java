@@ -56,7 +56,7 @@ public class ShowHintAction extends AnAction {
                   int offset = selectedEditor.getDocument().getLineStartOffset(pos.line) + pos.column;
                   PsiElement element = file.findElementAt(offset);
                   if (element != null) {
-                    component.setData(element, hintText, true);
+                    component.setData(element, hintText, true, null);
                     final JBPopup popup =
                       JBPopupFactory.getInstance().createComponentPopupBuilder(component, component)
                         .setDimensionServiceKey(project, DocumentationManager.JAVADOC_LOCATION_AND_SIZE, false)

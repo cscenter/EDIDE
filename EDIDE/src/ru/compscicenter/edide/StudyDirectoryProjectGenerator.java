@@ -18,13 +18,17 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.intellij.platform.templates.github.GeneratorException;
 import com.intellij.platform.templates.github.ZipUtil;
+import com.jetbrains.python.newProject.PythonProjectGenerator;
+import icons.StudyIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.compscicenter.edide.course.Course;
 import ru.compscicenter.edide.course.CourseInfo;
 import ru.compscicenter.edide.ui.StudyNewProjectDialog;
+import ru.compscicenter.edide.ui.StudyNewProjectPanel;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * User: lia
  */
-public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator {
+public class StudyDirectoryProjectGenerator extends PythonProjectGenerator implements DirectoryProjectGenerator{
   private static final Logger LOG = Logger.getInstance(StudyDirectoryProjectGenerator.class.getName());
   private static final String REPO_URL = "https://github.com/medvector/initial-python-course/archive/master.zip";
   private static final String USER_NAME = "medvector";
@@ -48,6 +52,7 @@ public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator
   private Map<CourseInfo, File> myCourses = new HashMap<CourseInfo, File>();
   private File mySelectedCourseFile;
   private Project myProject;
+  private ValidationResult result = new ValidationResult("");
 
   @Nls
   @NotNull
@@ -71,6 +76,7 @@ public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator
       LOG.error("invalid course in list");
     }
     mySelectedCourseFile = courseFile;
+    result = ValidationResult.OK;
   }
 
   public File getSelectedCourseFile() {
@@ -135,6 +141,12 @@ public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator
   @Override
   public Object showGenerationSettings(VirtualFile baseDir) throws ProcessCanceledException {
     return null;
+  }
+
+  @Nullable
+  @Override
+  public Icon getLogo() {
+    return StudyIcons.Playground;
   }
 
 
@@ -276,7 +288,9 @@ public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator
   @NotNull
   @Override
   public ValidationResult validate(@NotNull String s) {
-    return ValidationResult.OK;
+    ValidationResult res = result;
+    result = new ValidationResult("");
+    return res;
   }
 
   /**
@@ -361,5 +375,11 @@ public class StudyDirectoryProjectGenerator implements DirectoryProjectGenerator
       e.printStackTrace();
     }
     return coursesFromCash;
+  }
+
+  @Nullable
+  @Override
+  public JComponent getSettingsPanel(File baseDir) throws ProcessCanceledException {
+    return new StudyNewProjectPanel(myProject, this, null).getContentPanel();
   }
 }
